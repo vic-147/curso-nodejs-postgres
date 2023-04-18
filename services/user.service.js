@@ -1,44 +1,42 @@
 const boom = require('@hapi/boom');
-const getConection = require('../libs/postgres');
+const { models } = require('../libs/sequelize');
 
 class UserService {
   constructor() {}
 
   async create(data) {
-    const client = await getConection();
-    const rta = await client.query('INSERT INTO tasks(title) VALUES($1) RETURNING *', [data.title]);
-    // client.release();
-    return rta.rows[0];
+    const newUser = await models.User.create(data);
+    return newUser;
   }
-  //   return data;
-  // }
 
   // trae todo los ususario
   async find() {
-    const client = await getConection();
-    const rta = await client.query('SELECT * FROM tasks');
-    // client.release();
-    return rta.rows;
+    const rta = await models.User.findAll({
+      include: ['customer'],
+    });
+    return rta;
   }
 
-  // trae un usuario
+  // trae un usuario, finOne se reutiliza
   async findOne(id) {
-    const client = await getConection();
-    const rta = await client.query('SELECT * FROM tasks WHERE id = $1', [id]);
-    return rta.rows[0];
+    const user = await models.User.findByPk(id);
+    if (!user) {
+      throw boom.notFound('user not found');
+    }
+    return user;
   }
 
+  //actulizar un user
   async update(id, changes) {
-    return {
-      id,
-      changes,
-    };
+    const user = await this.findOne(id);
+    const rta = await user.update(changes);
+    return rta;
   }
 
   //  borra un usuario
   async delete(id) {
-    const client = await getConection();
-    await client.query('DELETE FROM tasks WHERE id = $1', [id]);
+    const user = await this.findOne(id);
+    user.destroy();
     return { id };
   }
 }

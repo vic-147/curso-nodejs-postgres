@@ -17,7 +17,31 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_EMAIL=admin@gmail.com
       - PGADMIN_DEFAULT_PASSWORD=toor
     ports:
       - 5050:80
+
+# otra base de dato
+  # mysql:
+  #   image: mysql:5
+  #   restart: always
+  #   environment:
+  #     - MYSQL_DATABASE=my_store
+  #     - MYSQL_USER=root
+  #     - MYSQL_ROOT_PASSWORD=toor
+  #     - MYSQL_PORT=3306
+
+  #   ports:
+  #     - 3306:3306
+  #   volumes:
+  #     - ./mysql_data:/var/lib/mysql
+
+  # phpmyadmin:
+  #   image: phpmyadmin/phpmyadmin
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=toor
+  #     - PMA_HOST=mysql
+
+  #   ports:
+  #     - 8080:80
